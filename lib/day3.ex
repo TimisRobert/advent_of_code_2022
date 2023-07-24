@@ -1,4 +1,10 @@
 defmodule Day3 do
+  def run do
+    input = File.read!("inputs/day3.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   # 65-90 A-Z
   # 97-122 a-z
   def calculate_score(number) when is_integer(number) and number < 97, do: number - 38
@@ -39,17 +45,5 @@ defmodule Day3 do
     end)
     |> Enum.map(&calculate_score/1)
     |> Enum.sum()
-  end
-end
-
-defmodule Mix.Tasks.Day3 do
-  use Mix.Task
-  import Day3
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day3.txt")
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end

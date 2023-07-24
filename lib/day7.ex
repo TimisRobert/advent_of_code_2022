@@ -1,4 +1,10 @@
 defmodule Day7 do
+  def run do
+    input = File.read!("inputs/day7.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def part1(input) do
     input
     |> parse_command_groups()
@@ -109,17 +115,5 @@ defmodule Day7 do
       end
     )
     |> Map.get(:file_tree)
-  end
-end
-
-defmodule Mix.Tasks.Day7 do
-  use Mix.Task
-  import Day7
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day7.txt")
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end

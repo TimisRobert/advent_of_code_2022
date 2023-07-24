@@ -1,4 +1,10 @@
 defmodule Day4 do
+  def run do
+    input = File.read!("inputs/day4.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def part1(input) do
     input
     |> String.split("\n", trim: true)
@@ -35,17 +41,5 @@ defmodule Day4 do
     |> then(fn [first, last] ->
       Range.new(first, last)
     end)
-  end
-end
-
-defmodule Mix.Tasks.Day4 do
-  use Mix.Task
-  import Day4
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day4.txt")
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end

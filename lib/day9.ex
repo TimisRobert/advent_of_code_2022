@@ -1,4 +1,10 @@
 defmodule Day9 do
+  def run do
+    input = File.read!("inputs/day9.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def part1(input) do
     input
     |> parse_commands()
@@ -26,7 +32,7 @@ defmodule Day9 do
           knots =
             tail
             |> Enum.scan(head, fn knot, head ->
-              if(close?(head, knot)) do
+              if close?(head, knot) do
                 knot
               else
                 move_tail(head, knot)
@@ -100,17 +106,5 @@ defmodule Day9 do
     |> String.split("\n", trim: true)
     |> Enum.map(&String.split/1)
     |> Enum.map(fn [dir, count] -> [dir, String.to_integer(count)] end)
-  end
-end
-
-defmodule Mix.Tasks.Day9 do
-  use Mix.Task
-  import Day9
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day9.txt")
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end

@@ -1,4 +1,10 @@
 defmodule Day8 do
+  def run do
+    input = File.read!("inputs/day8.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def part1(input) do
     input
     |> parse_grid()
@@ -103,17 +109,5 @@ defmodule Day8 do
         |> Map.put({j, i}, col |> String.to_integer())
       end)
     end)
-  end
-end
-
-defmodule Mix.Tasks.Day8 do
-  use Mix.Task
-  import Day8
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day8.txt")
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end

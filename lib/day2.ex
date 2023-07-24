@@ -26,6 +26,12 @@ defmodule Day2 do
     "Z" => 1
   }
 
+  def run do
+    input = File.read!("inputs/day2.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def parse(input) do
     input
     |> String.split("\n", trim: true)
@@ -65,18 +71,5 @@ defmodule Day2 do
       mine_score == rem(their_score + 1, 3) -> @win
       true -> @loss
     end + mine_score + 1
-  end
-end
-
-defmodule Mix.Tasks.Day2 do
-  use Mix.Task
-  import Day2
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day2.txt")
-
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end

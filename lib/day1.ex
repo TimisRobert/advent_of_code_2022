@@ -1,4 +1,10 @@
 defmodule Day1 do
+  def run do
+    input = File.read!("inputs/day1.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def parse(input) do
     input
     |> String.split("\n\n")
@@ -19,18 +25,5 @@ defmodule Day1 do
     |> Enum.sort()
     |> Enum.take(-3)
     |> Enum.sum()
-  end
-end
-
-defmodule Mix.Tasks.Day1 do
-  use Mix.Task
-
-  import Day1
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day1.txt")
-    part1(input) |> IO.puts()
-    part2(input) |> IO.puts()
   end
 end

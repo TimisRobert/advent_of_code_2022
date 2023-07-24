@@ -1,4 +1,10 @@
 defmodule Day5 do
+  def run do
+    input = File.read!("inputs/day5.txt")
+    part1(input) |> IO.puts()
+    part2(input) |> IO.puts()
+  end
+
   def part1(input) do
     [stacks, commands] =
       input
@@ -79,17 +85,5 @@ defmodule Day5 do
     lists
     |> Enum.flat_map(fn list -> Enum.take(list, 1) end)
     |> Enum.join()
-  end
-end
-
-defmodule Mix.Tasks.Day5 do
-  use Mix.Task
-  import Day5
-
-  @impl Mix.Task
-  def run(_args) do
-    {:ok, input} = File.read("inputs/day5.txt")
-    input |> part1() |> IO.puts()
-    input |> part2() |> IO.puts()
   end
 end
