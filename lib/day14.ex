@@ -14,8 +14,8 @@ defmodule Day14 do
 
     map
     |> drop_sand(max_depth, max_depth)
-    |> Map.filter(fn {_, value} -> value == :sand end)
-    |> map_size()
+    |> Enum.filter(fn {_, value} -> value == :sand end)
+    |> length()
   end
 
   def part2(input) do
@@ -25,8 +25,8 @@ defmodule Day14 do
 
     map
     |> drop_sand(0, max_depth + 1)
-    |> Map.filter(fn {_, value} -> value == :sand end)
-    |> map_size()
+    |> Enum.filter(fn {_, value} -> value == :sand end)
+    |> length()
   end
 
   def find_max_depth(map) do
