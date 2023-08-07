@@ -12,14 +12,7 @@
       systems = [ "x86_64-linux" "aarch64-darwin" ];
 
       perSystem = { config, pkgs, lib, ... }: {
-        devenv.shells.default = {
-          packages = [
-            pkgs.beam.packages.erlang.elixir
-            pkgs.beam.packages.erlang.elixir-ls
-            pkgs.nil
-            pkgs.nixfmt
-          ];
-        };
+        devenv.shells.default = { packages = [ ]; };
       };
     });
 }
