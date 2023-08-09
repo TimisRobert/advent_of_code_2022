@@ -6,11 +6,11 @@ defmodule Day16 do
   end
 
   def part1(input) do
-    input |> parse() |> walk_map()
+    input |> parse() |> find_best_path()
   end
 
   def part2(input) do
-    0
+    input |> parse() |> find_best_path_duo()
   end
 
   def parse(input) do
@@ -42,90 +42,96 @@ defmodule Day16 do
     {name, {flow, valves}}
   end
 
-  def walk_map(
+  def find_best_path(map) do
+    keys =
+      map
+      |> Map.filter(fn {key, {pressure, _}} ->
+        key == "AA" or pressure > 0
+      end)
+      |> Map.keys()
+
+    shortest_paths = calc_all_shortest_paths(map, keys)
+
+    find_best_path(map, shortest_paths, ["AA"], 30, 0)
+  end
+
+  def find_best_path_duo(map) do
+    keys =
+      map
+      |> Map.filter(fn {key, {pressure, _}} ->
+        key == "AA" or pressure > 0
+      end)
+      |> Map.keys()
+
+    shortest_paths = calc_all_shortest_paths(map, keys)
+
+    # find_all_best_paths(map, shortest_paths, ["AA"], 26, 0) |> Enum.take(1000)
+  end
+
+  def find_best_path(
         map,
-        current_depth \\ 0,
-        current_pressure \\ 0,
-        current_path \\ "AA",
-        open_valves \\ []
+        shortest_paths,
+        [current_path | _] = open_valves,
+        current_time,
+        current_pressure
+      ) do
+    shortest_paths
+    |> Map.get(current_path, [])
+    |> Stream.filter(fn {path, distance} ->
+      remaining_time = current_time - distance - 1
+
+      remaining_time > 0 and path not in open_valves
+    end)
+    |> Stream.map(fn {path, distance} ->
+      remaining_time = current_time - distance - 1
+      {pressure, _} = Map.get(map, path)
+
+      find_best_path(
+        map,
+        shortest_paths,
+        [path | open_valves],
+        remaining_time,
+        current_pressure + pressure * remaining_time
       )
+    end)
+    |> Enum.max(fn -> current_pressure end)
+  end
 
-  def walk_map(
-        _,
-        15,
-        current_pressure,
-        _,
-        open_valves
-      ),
-      do: current_pressure + Enum.sum(open_valves)
-
-  def walk_map(map, current_depth, current_pressure, current_path, open_valves) do
-    {pressure, paths} = Map.get(map, current_path)
-
-    if pressure == 0 do
-      paths
-      |> Stream.map(
-        &walk_map(
-          map,
-          current_depth + 1,
-          current_pressure + Enum.sum(open_valves),
-          &1,
-          open_valves
-        )
-      )
-      |> Enum.max()
-    else
-      open_valve =
-        walk_map(
-          map,
-          current_depth + 1,
-          current_pressure + Enum.sum(open_valves),
-          current_path,
-          [pressure | open_valves]
-        )
-
-      continue_paths =
-        paths
-        |> Stream.map(
-          &walk_map(
-            map,
-            current_depth + 1,
-            current_pressure + Enum.sum(open_valves),
-            &1,
-            open_valves
-          )
-        )
-        |> Enum.max()
-
-      max(open_valve, continue_paths)
+  def calc_all_shortest_paths(map, keys) do
+    for key <- keys, reduce: %{} do
+      acc ->
+        acc
+        |> Map.merge(%{key => calc_shortest_paths(map, [key], %{key => 0})})
     end
   end
 
-  def find_shortest_paths(map, start) do
-    find_shortest_paths(map, [start], Map.new())
-  end
+  def calc_shortest_paths(map, [head | tail] = _queue, visited) do
+    {_, edges} = Map.get(map, head)
 
-  def find_shortest_paths(_map, [] = _queue, visited) do
-    visited
-  end
-
-  def find_shortest_paths(map, [head | tail] = _queue, visited) do
-    {_, paths} = Map.get(map, head)
-
-    path_values =
-      paths
-      |> Enum.map(fn path ->
-        {value, _} = Map.get(map, path)
-        {path, value}
+    to_visit =
+      edges
+      |> Enum.filter(fn edge ->
+        Map.get(visited, edge) == nil
       end)
 
     visited =
-      paths
-      |> Enum.reduce(visited, fn path, visited ->
+      edges
+      |> Enum.reduce(visited, fn edge, visited ->
+        from_parent = Map.get(visited, head, 0) + 1
+
         visited
-        |> Map.update(path, [path], fn old -> old end)
+        |> Map.update(edge, from_parent, &if(from_parent < &1, do: from_parent, else: &1))
       end)
 
-    find_shortest_paths(map, tail ++ paths, visited)
+    calc_shortest_paths(map, tail ++ to_visit, visited)
   end
+
+  def calc_shortest_paths(_map, [] = _queue, visited) do
+    visited
+  end
+
+  def permutations([]), do: [[]]
+
+  def permutations(list),
+    do: for(elem <- list, rest <- permutations(list -- [elem]), do: [elem | rest])
 end
