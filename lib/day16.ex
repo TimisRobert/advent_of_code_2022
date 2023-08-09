@@ -65,7 +65,14 @@ defmodule Day16 do
 
     shortest_paths = calc_all_shortest_paths(map, keys)
 
-    # find_all_best_paths(map, shortest_paths, ["AA"], 26, 0) |> Enum.take(1000)
+    combinations(8, keys)
+    |> Stream.map(fn one ->
+      two = keys -- one
+
+      find_best_path(map, shortest_paths, ["AA" | one], 26, 0) +
+        find_best_path(map, shortest_paths, ["AA" | two], 26, 0)
+    end)
+    |> Enum.max()
   end
 
   def find_best_path(
@@ -128,6 +135,13 @@ defmodule Day16 do
 
   def calc_shortest_paths(_map, [] = _queue, visited) do
     visited
+  end
+
+  def combinations(0, _), do: [[]]
+  def combinations(_, []), do: []
+
+  def combinations(size, [head | tail]) do
+    for(elem <- combinations(size - 1, tail), do: [head | elem]) ++ combinations(size, tail)
   end
 
   def permutations([]), do: [[]]
