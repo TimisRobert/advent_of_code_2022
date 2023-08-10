@@ -66,7 +66,8 @@ defmodule Day16 do
     shortest_paths = calc_all_shortest_paths(map, keys)
 
     combinations(8, keys)
-    |> Stream.map(fn one ->
+    |> Flow.from_enumerable()
+    |> Flow.map(fn one ->
       two = keys -- one
 
       find_best_path(map, shortest_paths, ["AA" | one], 26, 0) +
@@ -105,7 +106,7 @@ defmodule Day16 do
   end
 
   def calc_all_shortest_paths(map, keys) do
-    for key <- keys, reduce: %{} do
+    for key <- keys, reduce: Map.new() do
       acc ->
         acc
         |> Map.merge(%{key => calc_shortest_paths(map, [key], %{key => 0})})
@@ -143,9 +144,4 @@ defmodule Day16 do
   def combinations(size, [head | tail]) do
     for(elem <- combinations(size - 1, tail), do: [head | elem]) ++ combinations(size, tail)
   end
-
-  def permutations([]), do: [[]]
-
-  def permutations(list),
-    do: for(elem <- list, rest <- permutations(list -- [elem]), do: [elem | rest])
 end

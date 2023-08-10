@@ -54,18 +54,18 @@ defmodule Day15 do
 
   defp merge_ranges(ranges) do
     [h | t] = Enum.sort(ranges)
-    do_merge_ranges(t, [h])
+    merge_ranges(t, [h])
   end
 
-  defp do_merge_ranges([s2..e2 | t2], [s1..e1 | t1]) when s2 <= e1 + 1 do
-    do_merge_ranges(t2, [s1..max(e1, e2) | t1])
+  defp merge_ranges([s2..e2 | t2], [s1..e1 | t1]) when s2 <= e1 + 1 do
+    merge_ranges(t2, [s1..max(e1, e2) | t1])
   end
 
-  defp do_merge_ranges([range2 | t2], acc) do
-    do_merge_ranges(t2, [range2 | acc])
+  defp merge_ranges([range2 | t2], acc) do
+    merge_ranges(t2, [range2 | acc])
   end
 
-  defp do_merge_ranges([], acc), do: acc
+  defp merge_ranges([], acc), do: acc
 
   def range_x({{s_x, s_y}, _} = coord, y) do
     d = manhattan_distance(coord)
